@@ -11,6 +11,18 @@
  * When the feature is totally implemented, your commit message must contain "close #n".
  */
 
-void helloWorld() {
+void helloWorld()
+{
     printf("Hello World !");
+}
+
+void dimension(const char *filename)
+{
+    unsigned char *data;
+    int w, h, c;
+    if (read_image_data(filename, &data, &w, &h, &c) != 0)
+    {
+        printf("Dimensions %s: %d x %d\n", filename, w, h);
+        free_image_data(data);
+    }
 }
