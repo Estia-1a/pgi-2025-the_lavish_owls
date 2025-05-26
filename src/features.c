@@ -22,7 +22,7 @@ void dimension(const char *filename)
     int w, h, c;
     if (read_image_data(filename, &data, &w, &h, &c) != 0)
     {
-        printf("Dimensions %s: %d x %d\n", filename, w, h);
+        printf("dimension: %d, %d\n", w, h);
         free_image_data(data);
     }
 }
