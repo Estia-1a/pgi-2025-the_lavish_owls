@@ -18,4 +18,6 @@ void max_component(const char *source_path, char component);
 
 void min_pixel(const char *source_path);
 
-#endif
+void min_component(const char *source_path, const char component);
+
+ #endif

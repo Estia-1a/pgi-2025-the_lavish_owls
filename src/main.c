@@ -43,6 +43,19 @@ int main(int argc, char **argv) {
     second_line(configuration.filenames[0]);
   } else if (strncmp(configuration.command, "min_pixel", 9) == 0) {
     min_pixel(configuration.filenames[0]);
+  } else if (strncmp(configuration.command, "min_component", 13) == 0) {
+    char component = 0;
+    for (int i = 1; i < argc; i++) {
+        if (strcmp(argv[i], "-c") == 0 && i + 2 < argc && strcmp(argv[i + 1], "min_component") == 0) {
+            component = argv[i + 2][0]; // ← ici on prend 'R', 'G' ou 'B'
+            break;
+        }
+    }
+    if (component == 0) {
+        printf("Missing component after min_component (R, G or B)\n");
+        return 1;
+    }
+    min_component(configuration.filenames[0], component);
   } else if (strncmp(configuration.command, "max_component", 13) == 0) {
     char *space = strchr(configuration.command, ' ');
     if (space == NULL || (space[1] != 'R' && space[1] != 'G' && space[1] != 'B')) {
