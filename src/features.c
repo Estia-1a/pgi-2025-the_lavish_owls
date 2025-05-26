@@ -150,6 +150,7 @@ void second_line(const char *source_path) {
         printf("Error reading image: %s\n", source_path);
     }
 }
+
 void max_component(const char *source_path, char component) {
     unsigned char *data = NULL;
     int width, height, channels;
@@ -171,6 +172,13 @@ void max_component(const char *source_path, char component) {
                 max_value = value;
                 max_x = x;
                 max_y = y;
+            }
+        }
+    }
+               
+     printf("max_component %c (%d, %d): %d\n", component, max_x, max_y, max_value);
+    free(data);
+}
 
 void min_pixel(const char *source_path) {
     unsigned char *data;
@@ -204,8 +212,5 @@ void min_pixel(const char *source_path) {
         }
     }
 
-    printf("max_component %c (%d, %d): %d\n", component, max_x, max_y, max_value);
-    free(data);
-}
-    printf("min_pixel (%d, %d): %d, %d, %d\n", min_x, min_y, min_r, min_g, min_b);
+    printf("min_pixel (%d, %d): %d, %d, %d\n", min_x, min_y, min_r, min_g, min_b);    
 }
