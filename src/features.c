@@ -131,9 +131,8 @@ void max_pixel(char *source_path) {
     
     // Afficher le résultat
     printf("max_pixel (%d, %d): %d, %d, %d\n", max_x, max_y, max_R, max_G, max_B);
-    
-    
     free(data);
+}
 
 void second_line(const char *source_path) {
     unsigned char *data;
