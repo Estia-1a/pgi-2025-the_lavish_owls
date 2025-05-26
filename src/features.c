@@ -185,3 +185,40 @@ void min_pixel(const char *source_path) {
 
     printf("min_pixel (%d, %d): %d, %d, %d\n", min_x, min_y, min_r, min_g, min_b);
 }
+
+void min_component(const char *source_path, const char component) {
+    unsigned char *data;
+    int width, height, channels;
+
+    if (!read_image_data(source_path, &data, &width, &height, &channels)) {
+        printf("Error reading image: %s\n", source_path);
+        return;
+    }
+
+    int min_value = 256;
+    int min_x = 0, min_y = 0;
+    int offset = 0;
+
+    if (component == 'R') offset = 0;
+    else if (component == 'G') offset = 1;
+    else if (component == 'B') offset = 2;
+    else {
+        printf("Invalid component: %c. Use R, G or B.\n", component);
+        return;
+    }
+
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            int index = (y * width + x) * channels + offset;
+            int value = data[index];
+
+            if (value < min_value) {
+                min_value = value;
+                min_x = x;
+                min_y = y;
+            }
+        }
+    }
+
+    printf("min_component %c (%d, %d): %d\n", component, min_x, min_y, min_value);
+}

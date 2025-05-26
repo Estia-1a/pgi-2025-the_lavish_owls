@@ -16,4 +16,6 @@ void second_line(const char *source_path);
 
 void min_pixel(const char *source_path);
 
+void min_component(const char *source_path, const char component);
+
  #endif
