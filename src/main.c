@@ -32,21 +32,18 @@ int main(int argc, char **argv) {
     helloWorld();
   } else if (strncmp( configuration.command, "dimension", 3) == 0) {
     dimension(configuration.filenames[0]);
-  }
-  /*
-   * TO COMPLETE
-   */
-  if (strncmp(configuration.command, "first_pixel", 11) == 0) {
+  } else if (strncmp(configuration.command, "first_pixel", 11) == 0) {
     /* first_pixel() function is defined in feature.h and implemented in feature.c */
     first_pixel(configuration.filenames[0]);
-  }
-  else if (strncmp(configuration.command, "tenth_pixel", 11) == 0) {
+  } else if (strncmp(configuration.command, "tenth_pixel", 11) == 0) {
     tenth_pixel(configuration.filenames[0]);
-  }
-  else if (strncmp(configuration.command, "max_pixel", 9) == 0) {
+  } else if (strncmp(configuration.command, "max_pixel", 9) == 0) {
     max_pixel(configuration.filenames[0]);
-  }
-  else if (strncmp(configuration.command, "max_component", 13) == 0) {
+  } else if (strncmp(configuration.command, "second_line", 11) == 0) {
+    second_line(configuration.filenames[0]);
+  } else if (strncmp(configuration.command, "min_pixel", 9) == 0) {
+    min_pixel(configuration.filenames[0]);
+  } else if (strncmp(configuration.command, "max_component", 13) == 0) {
     char *space = strchr(configuration.command, ' ');
     if (space == NULL || (space[1] != 'R' && space[1] != 'G' && space[1] != 'B')) {
         printf("Erreur : veuillez préciser la composante R, G ou B comme ceci : -c \"max_component R\"\n");

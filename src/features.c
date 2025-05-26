@@ -171,10 +171,41 @@ void max_component(const char *source_path, char component) {
                 max_value = value;
                 max_x = x;
                 max_y = y;
+
+void min_pixel(const char *source_path) {
+    unsigned char *data;
+    int width, height, channels;
+
+    if (!read_image_data(source_path, &data, &width, &height, &channels)) {
+        printf("Error reading image: %s\n", source_path);
+        return;
+    }
+
+    int min_sum = 256 * 3; // plus que max RGB (255+255+255)
+    int min_x = 0, min_y = 0;
+    int min_r = 0, min_g = 0, min_b = 0;
+
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            int index = (y * width + x) * channels;
+            int r = data[index];
+            int g = data[index + 1];
+            int b = data[index + 2];
+
+            int sum = r + g + b;
+            if (sum < min_sum) {
+                min_sum = sum;
+                min_x = x;
+                min_y = y;
+                min_r = r;
+                min_g = g;
+                min_b = b;
             }
         }
     }
 
     printf("max_component %c (%d, %d): %d\n", component, max_x, max_y, max_value);
     free(data);
+}
+    printf("min_pixel (%d, %d): %d, %d, %d\n", min_x, min_y, min_r, min_g, min_b);
 }
