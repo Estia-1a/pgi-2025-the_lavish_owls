@@ -86,6 +86,53 @@ void tenth_pixel(char *source_path) {
     
     free(data);
 }
+void max_pixel(char *source_path) {
+    unsigned char *data = NULL;
+    int width, height, channel_count;
+    
+    
+    int result = read_image_data(source_path, &data, &width, &height, &channel_count);
+    
+    
+    if (result == 0 || data == NULL) {
+        printf("Erreur lors de la lecture de l'image\n");
+        return;
+    }
+    
+    int max_sum = -1;  
+    int max_x = 0, max_y = 0;  
+    unsigned char max_R = 0, max_G = 0, max_B = 0;  
+    
+    
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            
+            int pixel_index = (y * width + x) * 3;
+            
+          
+            unsigned char R = data[pixel_index];
+            unsigned char G = data[pixel_index + 1];
+            unsigned char B = data[pixel_index + 2];
+            
+            
+            int sum = R + G + B;
+            
+            
+            if (sum > max_sum) {
+                max_sum = sum;
+                max_x = x;
+                max_y = y;
+                max_R = R;
+                max_G = G;
+                max_B = B;
+            }
+        }
+    }
+    
+    // Afficher le résultat
+    printf("max_pixel (%d, %d): %d, %d, %d\n", max_x, max_y, max_R, max_G, max_B);
+    free(data);
+}
 
 void second_line(const char *source_path) {
     unsigned char *data;
