@@ -151,6 +151,7 @@ void second_line(const char *source_path) {
         printf("Error reading image: %s\n", source_path);
     }
 }
+
 void max_component(const char *source_path, char component) {
     unsigned char *data = NULL;
     int width, height, channels;
@@ -173,9 +174,9 @@ void max_component(const char *source_path, char component) {
                 max_x = x;
                 max_y = y;
             }
-        } 
-    } 
-
+        }
+    }
+               
     printf("max_component %c (%d, %d): %d\n", component, max_x, max_y, max_value);
     free(data);
 }
