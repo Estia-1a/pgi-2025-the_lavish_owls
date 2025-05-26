@@ -251,3 +251,31 @@ void min_component(const char *source_path, const char component) {
 
     printf("min_component %c (%d, %d): %d\n", component, min_x, min_y, min_value);
 }
+
+
+void color_green(const char *source_path) {
+    unsigned char *data = NULL;
+    int width, height, channels;
+
+    if (read_image_data(source_path, &data, &width, &height, &channels) != 1 || data == NULL) {
+        printf("Erreur lors de la lecture de l'image\n");
+        return;
+    }
+
+    // Garde uniquement la composante verte
+    for (int i = 0; i < width * height * channels; i += channels) {
+        data[i] = 0;         // R = 0
+        // data[i+1] = G (on garde)
+        data[i + 2] = 0;     // B = 0
+        // Si image avec alpha, on ne touche pas à data[i+3]
+    }
+
+    if (write_image_data("image_out.bmp", data, width, height) == 0) {
+        printf("Erreur lors de l'écriture de l'image\n");
+    } else {
+        printf("L'image avec seulement le vert a été enregistrée dans image_out.bmp\n");
+    }
+
+    free(data);
+}
+
