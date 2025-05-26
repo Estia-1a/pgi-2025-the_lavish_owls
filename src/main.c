@@ -74,7 +74,6 @@ int main(int argc, char **argv) {
         printf("Erreur : veuillez préciser la composante R, G ou B comme ceci : -c \"max_component R\"\n");
         return 1;
     }
-
     char component = space[1];
     max_component(configuration.filenames[0], component);
   } else if (strncmp(configuration.command, "print_pixel", 11) == 0) {
@@ -85,6 +84,10 @@ int main(int argc, char **argv) {
     } else {
         fprintf(stderr, "Erreur : la commande print_pixel requiert deux arguments X et Y.\n");
     }
+  }else if (strncmp(configuration.command, "color_red", 9) == 0) {
+    color_red(configuration.filenames[0]);
+  }else if (strncmp(configuration.command, "stat_report", 11) == 0) {
+    stat_report(configuration.filenames[0]);
   }
   else if (strcmp(configuration.command, "color_green") == 0) {
     color_green(configuration.filenames[0]);
