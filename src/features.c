@@ -272,9 +272,9 @@ void color_green(const char *source_path) {
     }
 
     if (write_image_data("image_out.bmp", data, width, height) == 0) {
-        printf("Erreur lors de l'écriture de l'image\n");
+        printf("Erreur lors de l'ecriture de l'image\n");
     } else {
-        printf("L'image avec seulement le vert a été enregistrée dans image_out.bmp\n");
+        printf("L'image avec seulement le vert a ete enregistree dans image_out.bmp\n");
     }
 
     free(data);
