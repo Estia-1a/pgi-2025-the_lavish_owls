@@ -85,6 +85,8 @@ int main(int argc, char **argv) {
     } else {
         fprintf(stderr, "Erreur : la commande print_pixel requiert deux arguments X et Y.\n");
     }
-  }
+  }else if (strncmp(configuration.command, "color_red", 9) == 0) {
+    color_red(configuration.filenames[0]);
+}
     return 0;
 }

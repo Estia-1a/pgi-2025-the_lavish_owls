@@ -251,3 +251,31 @@ void min_component(const char *source_path, const char component) {
 
     printf("min_component %c (%d, %d): %d\n", component, min_x, min_y, min_value);
 }
+
+void color_red(const char *source_path) {
+    unsigned char *data;
+    int width, height, channels;
+
+    if (!read_image_data(source_path, &data, &width, &height, &channels)) {
+        printf("Error reading image: %s\n", source_path);
+        return;
+    }
+
+    int total_pixels = width * height;
+    int size = total_pixels * channels;
+
+    for (int i = 0; i < size; i += channels) {
+        // Garder le rouge, mettre vert et bleu à 0
+        // Rouge = data[i + 0], Vert = data[i + 1], Bleu = data[i + 2]
+        if (channels >= 3) {
+            data[i + 1] = 0; // G
+            data[i + 2] = 0; // B
+        }
+    }
+
+    if (!write_image_data("image_out.bmp", data, width, height)) {
+        printf("Error writing image_out.bmp\n");
+    } else {
+        printf("Red-only image written to image_out.bmp\n");
+    }
+}
