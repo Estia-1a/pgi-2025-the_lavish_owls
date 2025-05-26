@@ -43,7 +43,8 @@ int main(int argc, char **argv) {
   else if (strncmp(configuration.command, "tenth_pixel", 11) == 0) {
     tenth_pixel(configuration.filenames[0]);
   }
+
+  second_line("./images/input/image.jpeg");
+
   return 0;
-  
-  
 }

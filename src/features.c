@@ -86,3 +86,20 @@ void tenth_pixel(char *source_path) {
     
     free(data);
 }
+
+void second_line(const char *source_path) {
+    unsigned char *data;
+    int width, height, channels;
+
+    if (read_image_data(source_path, &data, &width, &height, &channels)) {
+        if (height < 2) {
+            printf("Error: Image height must be at least 2 pixels.\n");
+            return;
+        }
+
+        int index = (1 * width + 0) * channels; // (1,0) = 1ère colonne, 2e ligne
+        printf("second_line: %d, %d, %d\n", data[index], data[index+1], data[index+2]);
+    } else {
+        printf("Error reading image: %s\n", source_path);
+    }
+}
