@@ -46,5 +46,7 @@ int main(int argc, char **argv) {
 
   second_line("./images/input/image.jpeg");
 
+   min_pixel("./images/input/image.jpeg");
+   
   return 0;
 }
