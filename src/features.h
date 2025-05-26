@@ -20,4 +20,6 @@ void min_pixel(const char *source_path);
 
 void min_component(const char *source_path, const char component);
 
+void stat_report(const char *filename);
+
  #endif

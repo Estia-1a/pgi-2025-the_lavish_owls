@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include "features.h"
 #include "utils.h"
+#include <limits.h>
 
 /**
  * @brief Here, you have to code features of the project.
@@ -249,4 +250,66 @@ void min_component(const char *source_path, const char component) {
     }
 
     printf("min_component %c (%d, %d): %d\n", component, min_x, min_y, min_value);
+}
+
+void stat_report(const char *filename) {
+    unsigned char *data = NULL;
+    int width, height, channels;
+
+    if (read_image_data(filename, &data, &width, &height, &channels) == 0) {
+        fprintf(stderr, "Error reading image: %s\n", filename);
+        return;
+    }
+
+    unsigned int total_pixels = width * height;
+
+    int max_pixel_sum = -1, min_pixel_sum = 256 * 3;
+    pixelRGB max_pixel = {0, 0, 0}, min_pixel = {0, 0, 0};
+    unsigned char max_r = 0, max_g = 0, max_b = 0;
+    unsigned char min_r = 255, min_g = 255, min_b = 255;
+
+    for (unsigned int y = 0; y < height; y++) {
+        for (unsigned int x = 0; x < width; x++) {
+            pixelRGB *p = get_pixel(data, width, height, channels, x, y);
+            if (!p) continue;
+
+            int pixel_sum = p->R + p->G + p->B;
+
+            if (pixel_sum > max_pixel_sum) {
+                max_pixel_sum = pixel_sum;
+                max_pixel = *p;
+            }
+            if (pixel_sum < min_pixel_sum) {
+                min_pixel_sum = pixel_sum;
+                min_pixel = *p;
+            }
+
+            if (p->R > max_r) max_r = p->R;
+            if (p->G > max_g) max_g = p->G;
+            if (p->B > max_b) max_b = p->B;
+
+            if (p->R < min_r) min_r = p->R;
+            if (p->G < min_g) min_g = p->G;
+            if (p->B < min_b) min_b = p->B;
+        }
+    }
+
+    FILE *f = fopen("stat_report.txt", "w");
+    if (!f) {
+        fprintf(stderr, "Unable to write stat_report.txt\n");
+        free(data);
+        return;
+    }
+
+    fprintf(f, "max_pixel: R=%d G=%d B=%d\n", max_pixel.R, max_pixel.G, max_pixel.B);
+    fprintf(f, "min_pixel: R=%d G=%d B=%d\n", min_pixel.R, min_pixel.G, min_pixel.B);
+    fprintf(f, "max_component R: %d\n", max_r);
+    fprintf(f, "max_component G: %d\n", max_g);
+    fprintf(f, "max_component B: %d\n", max_b);
+    fprintf(f, "min_component R: %d\n", min_r);
+    fprintf(f, "min_component G: %d\n", min_g);
+    fprintf(f, "min_component B: %d\n", min_b);
+
+    fclose(f);
+    free(data);
 }
