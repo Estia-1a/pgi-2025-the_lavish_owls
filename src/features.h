@@ -22,4 +22,6 @@ void min_component(const char *source_path, const char component);
 
 void color_red(const char *source_path);
 
+void stat_report(const char *filename);
+
  #endif
