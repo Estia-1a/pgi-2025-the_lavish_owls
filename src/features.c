@@ -150,3 +150,31 @@ void second_line(const char *source_path) {
         printf("Error reading image: %s\n", source_path);
     }
 }
+void max_component(const char *source_path, char component) {
+    unsigned char *data = NULL;
+    int width, height, channels;
+
+    if (read_image_data(source_path, &data, &width, &height, &channels) != 1 || data == NULL) {
+        printf("Erreur lors de la lecture de l'image\n");
+        return;
+    }
+
+    int max_value = -1;
+    int max_x = 0, max_y = 0;
+    int comp_index = (component == 'R') ? 0 : (component == 'G') ? 1 : 2;
+
+    for (int y = 0; y < height; ++y) {
+        for (int x = 0; x < width; ++x) {
+            int index = (y * width + x) * channels;
+            int value = data[index + comp_index];
+            if (value > max_value) {
+                max_value = value;
+                max_x = x;
+                max_y = y;
+            }
+        }
+    }
+
+    printf("max_component %c (%d, %d): %d\n", component, max_x, max_y, max_value);
+    free(data);
+}

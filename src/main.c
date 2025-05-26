@@ -46,5 +46,18 @@ int main(int argc, char **argv) {
   else if (strncmp(configuration.command, "max_pixel", 9) == 0) {
     max_pixel(configuration.filenames[0]);
   }
+  else if (strncmp(configuration.command, "max_component", 13) == 0) {
+    char *space = strchr(configuration.command, ' ');
+    if (space == NULL || (space[1] != 'R' && space[1] != 'G' && space[1] != 'B')) {
+        printf("Erreur : veuillez préciser la composante R, G ou B comme ceci : -c \"max_component R\"\n");
+        return 1;
+    }
+
+    char component = space[1];
+    max_component(configuration.filenames[0], component);
+  }
+
+
+
   return 0;
 }
