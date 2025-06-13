@@ -28,4 +28,6 @@ void stat_report(const char *filename);
 
 void color_blue(const char *source_path);
 
+void rotate_cw(const char *source_path);
+
  #endif

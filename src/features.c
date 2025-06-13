@@ -397,3 +397,52 @@ void color_blue(const char *source_path) {
     
     free(data);
 }
+void rotate_cw(const char *source_path) {
+    unsigned char *data;
+    int width, height, channels;
+    
+    if (!read_image_data(source_path, &data, &width, &height, &channels)) {
+        printf("Error reading image: %s\n", source_path);
+        return;
+    }
+    
+    // Après rotation 90° horaire : largeur devient hauteur, hauteur devient largeur
+    int new_width = height;
+    int new_height = width;
+    
+    // Allouer mémoire pour l'image tournée
+    unsigned char *rotated_data = malloc(new_width * new_height * channels);
+    if (rotated_data == NULL) {
+        printf("Error: Memory allocation failed\n");
+        free(data);
+        return;
+    }
+    
+    // Rotation 90° sens horaire
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            // Position dans l'image originale
+            int original_index = (y * width + x) * channels;
+            
+            // Position dans l'image tournée
+            // Formule rotation 90° horaire: (x,y) -> (height-1-y, x)
+            int new_x = height - 1 - y;
+            int new_y = x;
+            int rotated_index = (new_y * new_width + new_x) * channels;
+            
+            // Copier tous les canaux (RGB ou RGBA)
+            for (int c = 0; c < channels; c++) {
+                rotated_data[rotated_index + c] = data[original_index + c];
+            }
+        }
+    }
+    
+    // Sauvegarder l'image tournée
+    if (!write_image_data("image_out.bmp", rotated_data, new_width, new_height)) {
+        printf("Error writing image\n");
+    }
+    
+    // Libérer la mémoire
+    free(data);
+    free(rotated_data);
+}

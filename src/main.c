@@ -95,6 +95,9 @@ int main(int argc, char **argv) {
   else if (strcmp(command, "color_blue") == 0) {
     color_blue(configuration.filenames[0]);
   }
+  else if (strcmp(command, "rotate_cw") == 0) {
+    rotate_cw(configuration.filenames[0]);
+  }
 
     return 0;
 }
