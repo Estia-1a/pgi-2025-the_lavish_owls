@@ -369,3 +369,19 @@ void stat_report(const char *filename) {
     fclose(f);
     free(data);
 }
+
+void color_gray(unsigned char *data, int width, int height, int channels) {
+    for (int y = 0; y < height; ++y) {
+        for (int x = 0; x < width; ++x) {
+            int idx = (y * width + x) * channels;
+            unsigned char r = data[idx + 0];
+            unsigned char g = data[idx + 1];
+            unsigned char b = data[idx + 2];
+            unsigned char gray = (r + g + b) / 3;
+            data[idx + 0] = gray;
+            data[idx + 1] = gray;
+            data[idx + 2] = gray;
+            // Si channels == 4, on laisse l'alpha intact
+        }
+    }
+}

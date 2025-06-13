@@ -93,5 +93,28 @@ int main(int argc, char **argv) {
     color_green(configuration.filenames[0]);
   }
 
+  else if (strcmp(configuration.command, "color_gray") == 0) {
+    int width, height, channels;
+    unsigned char *data_in = NULL;
+    // Lecture de l'image
+    if (!read_image_data(configuration.filenames[0], &data_in, &width, &height, &channels)) {
+        printf("Erreur lors de la lecture de l'image.\n");
+        return 1;
+    }
+    // Application de la conversion en niveaux de gris
+    color_gray(data_in, width, height, channels);
+    // Sauvegarde de l'image
+    if (!write_image_data("image_out.bmp", data_in, width, height)) {
+        printf("Erreur lors de l'écriture de l'image.\n");
+        free(data_in);
+        return 1;
+    }
+    free(data_in);
+    printf("Image convertie en niveaux de gris !\n");
+  }
+
+  
+  
+
     return 0;
 }

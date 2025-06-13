@@ -1,0 +1,8 @@
+max_pixel: R=255 G=254 B=255
+min_pixel: R=14 G=0 B=0
+max_component R: 255
+max_component G: 254
+max_component B: 255
+min_component R: 11
+min_component G: 0
+min_component B: 0

@@ -22,7 +22,10 @@ void min_component(const char *source_path, const char component);
 
 void color_green(const char *source_path);
 void color_red(const char *source_path);
+void color_gray(unsigned char *data, int width, int height, int channels);
 
 void stat_report(const char *filename);
+
+
 
  #endif
