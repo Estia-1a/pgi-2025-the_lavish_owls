@@ -98,6 +98,8 @@ int main(int argc, char **argv) {
   else if (strcmp(command, "color_blue") == 0) {
     color_blue(configuration.filenames[0]);
   }
-
+  else if (strncmp(configuration.command, "rotate_acw", 10) == 0) {
+    rotate_acw(configuration.filenames[0]);
+  }
     return 0;
 }

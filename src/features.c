@@ -426,3 +426,58 @@ void color_blue(const char *source_path) {
     
     free(data);
 }
+
+void rotate_acw(const char *source_path) {
+    unsigned char *data = NULL;
+    int width, height, channels;
+
+    // Lire les données de l'image
+    if (read_image_data(source_path, &data, &width, &height, &channels) != 1 || data == NULL) {
+        printf("Erreur lors de la lecture de l'image\n");
+        return;
+    }
+
+    // Après rotation 90° anti-horaire :
+    // - nouvelle largeur = ancienne hauteur
+    // - nouvelle hauteur = ancienne largeur
+    int new_width = height;
+    int new_height = width;
+
+    // Créer un nouveau buffer pour l'image rotée
+    unsigned char *rotated_data = malloc(new_width * new_height * channels);
+    if (rotated_data == NULL) {
+        printf("Erreur d'allocation mémoire\n");
+        free(data);
+        return;
+    }
+
+    // Effectuer la rotation 90° anti-horaire
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            // Position dans l'image originale
+            int original_index = (y * width + x) * channels;
+            
+            // Position dans l'image rotée
+            // Pour rotation 90° anti-horaire : (x, y) -> (y, width-1-x)
+            int new_x = y;
+            int new_y = width - 1 - x;
+            int rotated_index = (new_y * new_width + new_x) * channels;
+            
+            // Copier les données pixel par pixel
+            for (int c = 0; c < channels; c++) {
+                rotated_data[rotated_index + c] = data[original_index + c];
+            }
+        }
+    }
+
+    // Écrire l'image rotée
+    if (write_image_data("image_out.bmp", rotated_data, new_width, new_height) == 0) {
+        printf("Erreur lors de l'ecriture de l'image\n");
+    } else {
+        printf("L'image avec rotation 90° anti-horaire a ete enregistree dans image_out.bmp\n");
+    }
+
+    // Libérer la mémoire
+    free(data);
+    free(rotated_data);
+}

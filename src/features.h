@@ -30,4 +30,6 @@ void color_invert(const char *source_path);
 
 void color_blue(const char *source_path);
 
+void rotate_acw(const char *source_path);
+
  #endif
