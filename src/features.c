@@ -592,3 +592,52 @@ void mirror_horizontal(const char *source_path) {
     free(data);
     free(mirrored_data);
 }
+
+void mirror_vertical(const char *source_path) {
+    unsigned char *data = NULL;
+    int width, height, channels;
+
+    // Lire les données de l'image
+    if (read_image_data(source_path, &data, &width, &height, &channels) != 1 || data == NULL) {
+        printf("Erreur lors de la lecture de l'image\n");
+        return;
+    }
+
+    // Créer un nouveau buffer pour l'image miroir
+    unsigned char *mirrored_data = malloc(width * height * channels);
+    if (mirrored_data == NULL) {
+        printf("Erreur d'allocation mémoire\n");
+        free(data);
+        return;
+    }
+
+    // Effectuer la symétrie verticale (retourner l'image verticalement)
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            // Position dans l'image originale
+            int original_index = (y * width + x) * channels;
+            
+            // Position dans l'image miroir
+            // Pour symétrie verticale : (x, y) -> (x, height-1-y)
+            int mirror_x = x;
+            int mirror_y = height - 1 - y;
+            int mirrored_index = (mirror_y * width + mirror_x) * channels;
+            
+            // Copier les données pixel par pixel
+            for (int c = 0; c < channels; c++) {
+                mirrored_data[mirrored_index + c] = data[original_index + c];
+            }
+        }
+    }
+
+    // Écrire l'image miroir
+    if (write_image_data("image_out.bmp", mirrored_data, width, height) == 0) {
+        printf("Erreur lors de l'ecriture de l'image\n");
+    } else {
+        printf("L'image avec symétrie verticale (haut-bas inversé) a ete enregistree dans image_out.bmp\n");
+    }
+
+    // Libérer la mémoire
+    free(data);
+    free(mirrored_data);
+}

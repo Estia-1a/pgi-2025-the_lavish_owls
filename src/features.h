@@ -38,4 +38,6 @@ void rotate_cw(const char *source_path);
 
 void mirror_horizontal(const char *source_path);
 
+void mirror_vertical(const char *source_path);
+
 #endif
