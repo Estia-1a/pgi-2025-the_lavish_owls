@@ -124,6 +124,9 @@ int main(int argc, char **argv) {
     free(data_in);
     printf("Image convertie en niveaux de gris !\n");
   }
+  else if (strcmp(command, "mirror_horizontal") == 0) {
+    mirror_horizontal(configuration.filenames[0]);
+  }
 
     return 0;
 }
