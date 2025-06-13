@@ -592,3 +592,46 @@ void mirror_horizontal(const char *source_path) {
     free(data);
     free(mirrored_data);
 }
+void mirror_total(char* filename) {
+    int width, height, channels;
+    unsigned char *data_in = NULL;
+    
+    // Lecture de l'image
+    if (!read_image_data(filename, &data_in, &width, &height, &channels)) {
+        printf("Erreur lors de la lecture de l'image.\n");
+        return;
+    }
+    
+    // Allocation pour l'image de sortie
+    unsigned char *data_out = malloc(width * height * channels);
+    if (!data_out) {
+        printf("Erreur d'allocation mémoire.\n");
+        free(data_in);
+        return;
+    }
+    
+    // Application de la symétrie complète
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            // Position dans l'image originale
+            int src_index = (y * width + x) * channels;
+            // Position dans l'image symétrique (miroir horizontal ET vertical)
+            int dst_index = ((height - 1 - y) * width + (width - 1 - x)) * channels;
+            
+            // Copie des pixels
+            for (int c = 0; c < channels; c++) {
+                data_out[dst_index + c] = data_in[src_index + c];
+            }
+        }
+    }
+    
+    // Sauvegarde de l'image
+    if (!write_image_data("image_out.bmp", data_out, width, height)) {
+        printf("Erreur lors de l'écriture de l'image.\n");
+    } else {
+        printf("Image avec symetrie complete sauvegardee !\n");
+    }
+    
+    free(data_in);
+    free(data_out);
+}

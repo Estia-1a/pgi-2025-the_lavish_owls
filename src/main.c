@@ -127,6 +127,9 @@ int main(int argc, char **argv) {
   else if (strcmp(command, "mirror_horizontal") == 0) {
     mirror_horizontal(configuration.filenames[0]);
   }
+  else if (strcmp(command, "mirror_total") == 0) {
+    mirror_total(configuration.filenames[0]);
+  }
 
     return 0;
 }
