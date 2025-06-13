@@ -38,4 +38,6 @@ void rotate_cw(const char *source_path);
 
 void color_gray_luminance(unsigned char *data, int width, int height, int channels);
 
+void mirror_horizontal(const char *source_path);
+
 #endif

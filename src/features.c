@@ -317,15 +317,13 @@ void stat_report(const char *filename) {
         return;
     }
 
-    unsigned int total_pixels = width * height;
-
     int max_pixel_sum = -1, min_pixel_sum = 256 * 3;
     pixelRGB max_pixel = {0, 0, 0}, min_pixel = {0, 0, 0};
     unsigned char max_r = 0, max_g = 0, max_b = 0;
     unsigned char min_r = 255, min_g = 255, min_b = 255;
 
-    for (unsigned int y = 0; y < height; y++) {
-        for (unsigned int x = 0; x < width; x++) {
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
             pixelRGB *p = get_pixel(data, width, height, channels, x, y);
             if (!p) continue;
 
@@ -562,4 +560,50 @@ void color_gray_luminance(unsigned char *data, int width, int height, int channe
             // Si RGBA (channels == 4), on laisse l'alpha intact
         }
     }
+}
+
+void mirror_horizontal(const char *source_path) {
+    unsigned char *data;
+    int width, height, channels;
+    
+    if (!read_image_data(source_path, &data, &width, &height, &channels)) {
+        printf("Error reading image: %s\n", source_path);
+        return;
+    }
+    
+    // Allouer mémoire pour l'image miroir
+    unsigned char *mirrored_data = malloc(width * height * channels);
+    if (mirrored_data == NULL) {
+        printf("Error: Memory allocation failed\n");
+        free(data);
+        return;
+    }
+    
+    // Miroir horizontal : inverser les colonnes (gauche <-> droite)
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            // Position dans l'image originale
+            int original_index = (y * width + x) * channels;
+            
+            // Position dans l'image miroir
+            // Miroir horizontal: (x,y) -> (width-1-x, y)
+            int new_x = width - 1 - x;
+            int new_y = y;
+            int mirrored_index = (new_y * width + new_x) * channels;
+            
+            // Copier tous les canaux (RGB ou RGBA)
+            for (int c = 0; c < channels; c++) {
+                mirrored_data[mirrored_index + c] = data[original_index + c];
+            }
+        }
+    }
+    
+    // Sauvegarder l'image miroir
+    if (!write_image_data("image_out.bmp", mirrored_data, width, height)) {
+        printf("Error writing image\n");
+    }
+    
+    // Libérer la mémoire
+    free(data);
+    free(mirrored_data);
 }
