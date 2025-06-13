@@ -36,8 +36,12 @@ void rotate_acw(const char *source_path);
 
 void rotate_cw(const char *source_path);
 
+void color_gray_luminance(unsigned char *data, int width, int height, int channels);
+
 void mirror_horizontal(const char *source_path);
 
 void mirror_total(char* filename);
+
+void mirror_vertical(const char *source_path);
 
 #endif

@@ -317,15 +317,13 @@ void stat_report(const char *filename) {
         return;
     }
 
-    unsigned int total_pixels = width * height;
-
     int max_pixel_sum = -1, min_pixel_sum = 256 * 3;
     pixelRGB max_pixel = {0, 0, 0}, min_pixel = {0, 0, 0};
     unsigned char max_r = 0, max_g = 0, max_b = 0;
     unsigned char min_r = 255, min_g = 255, min_b = 255;
 
-    for (unsigned int y = 0; y < height; y++) {
-        for (unsigned int x = 0; x < width; x++) {
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
             pixelRGB *p = get_pixel(data, width, height, channels, x, y);
             if (!p) continue;
 
@@ -547,6 +545,23 @@ void rotate_cw(const char *source_path) {
     free(data);
     free(rotated_data);
 }
+
+void color_gray_luminance(unsigned char *data, int width, int height, int channels) {
+    for (int y = 0; y < height; ++y) {
+        for (int x = 0; x < width; ++x) {
+            int idx = (y * width + x) * channels;
+            unsigned char r = data[idx + 0];
+            unsigned char g = data[idx + 1];
+            unsigned char b = data[idx + 2];
+            unsigned char gray = (unsigned char)(0.21 * r + 0.72 * g + 0.07 * b);
+            data[idx + 0] = gray;
+            data[idx + 1] = gray;
+            data[idx + 2] = gray;
+            // Si RGBA (channels == 4), on laisse l'alpha intact
+        }
+    }
+}
+
 void mirror_horizontal(const char *source_path) {
     unsigned char *data;
     int width, height, channels;
@@ -592,6 +607,7 @@ void mirror_horizontal(const char *source_path) {
     free(data);
     free(mirrored_data);
 }
+
 void mirror_total(char* filename) {
     int width, height, channels;
     unsigned char *data_in = NULL;
@@ -634,4 +650,54 @@ void mirror_total(char* filename) {
     
     free(data_in);
     free(data_out);
+
+}
+
+void mirror_vertical(const char *source_path) {
+    unsigned char *data = NULL;
+    int width, height, channels;
+
+    // Lire les données de l'image
+    if (read_image_data(source_path, &data, &width, &height, &channels) != 1 || data == NULL) {
+        printf("Erreur lors de la lecture de l'image\n");
+        return;
+    }
+
+    // Créer un nouveau buffer pour l'image miroir
+    unsigned char *mirrored_data = malloc(width * height * channels);
+    if (mirrored_data == NULL) {
+        printf("Erreur d'allocation mémoire\n");
+        free(data);
+        return;
+    }
+
+    // Effectuer la symétrie verticale (retourner l'image verticalement)
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            // Position dans l'image originale
+            int original_index = (y * width + x) * channels;
+            
+            // Position dans l'image miroir
+            // Pour symétrie verticale : (x, y) -> (x, height-1-y)
+            int mirror_x = x;
+            int mirror_y = height - 1 - y;
+            int mirrored_index = (mirror_y * width + mirror_x) * channels;
+            
+            // Copier les données pixel par pixel
+            for (int c = 0; c < channels; c++) {
+                mirrored_data[mirrored_index + c] = data[original_index + c];
+            }
+        }
+    }
+
+    // Écrire l'image miroir
+    if (write_image_data("image_out.bmp", mirrored_data, width, height) == 0) {
+        printf("Erreur lors de l'ecriture de l'image\n");
+    } else {
+        printf("L'image avec symétrie verticale (haut-bas inversé) a ete enregistree dans image_out.bmp\n");
+    }
+
+    // Libérer la mémoire
+    free(data);
+    free(mirrored_data);
 }
