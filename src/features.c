@@ -369,3 +369,32 @@ void stat_report(const char *filename) {
     fclose(f);
     free(data);
 }
+
+void color_invert(const char *source_path) {
+    unsigned char *data = NULL;
+    int width, height, channels;
+
+    // Lire les données de l'image
+    if (read_image_data(source_path, &data, &width, &height, &channels) != 1 || data == NULL) {
+        printf("Erreur lors de la lecture de l'image\n");
+        return;
+    }
+
+    // Inverser les couleurs pour chaque pixel
+    for (int i = 0; i < width * height * channels; i += channels) {
+        data[i] = 255 - data[i];         // Inverser R
+        data[i + 1] = 255 - data[i + 1]; // Inverser G
+        data[i + 2] = 255 - data[i + 2]; // Inverser B
+        // Si il y a un canal alpha (channels == 4), on ne le touche pas
+    }
+
+    // Écrire l'image inversée
+    if (write_image_data("image_out.bmp", data, width, height) == 0) {
+        printf("Erreur lors de l'ecriture de l'image\n");
+    } else {
+        printf("L'image avec les couleurs inversees a ete enregistree dans image_out.bmp\n");
+    }
+
+    // Libérer la mémoire
+    free(data);
+}

@@ -26,4 +26,6 @@ void color_red(const char *source_path);
 
 void stat_report(const char *filename);
 
+void color_invert(const char *source_path);
+
  #endif

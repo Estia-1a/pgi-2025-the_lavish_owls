@@ -92,6 +92,8 @@ int main(int argc, char **argv) {
   else if (strcmp(configuration.command, "color_green") == 0) {
     color_green(configuration.filenames[0]);
   }
-
+  else if (strncmp(configuration.command, "color_invert", 12) == 0) {
+    color_invert(configuration.filenames[0]);
+  }
     return 0;
 }
