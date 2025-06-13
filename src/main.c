@@ -145,5 +145,26 @@ int main(int argc, char **argv) {
     printf("Image convertie en niveaux de gris (luminosité) !\n");
   }
 
+  else if (strncmp(configuration.command, "scale_crop", 10) == 0) {
+    // Recherche les 4 arguments supplémentaires
+    int args_found = 0, cx = 0, cy = 0, cw = 0, ch = 0;
+    for (int i = 1; i < argc - 4; i++) {
+        if (strcmp(argv[i], "-c") == 0 && strcmp(argv[i + 1], "scale_crop") == 0) {
+            cx = atoi(argv[i + 2]);
+            cy = atoi(argv[i + 3]);
+            cw = atoi(argv[i + 4]);
+            ch = atoi(argv[i + 5]);
+            args_found = 1;
+            break;
+        }
+    }
+    if (!args_found) {
+        printf("Erreur : usage attendu : -c scale_crop center_x center_y width height\n");
+        return 1;
+    }
+    scale_crop(configuration.filenames[0], cx, cy, cw, ch);
+    printf("Image cropée !\n");
+  }
+
     return 0;
 }

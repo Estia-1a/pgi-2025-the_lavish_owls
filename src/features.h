@@ -40,4 +40,6 @@ void color_gray_luminance(unsigned char *data, int width, int height, int channe
 
 void mirror_horizontal(const char *source_path);
 
+void scale_crop(const char *filename, int center_x, int center_y, int crop_width, int crop_height);
+
 #endif

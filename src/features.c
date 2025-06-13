@@ -607,3 +607,52 @@ void mirror_horizontal(const char *source_path) {
     free(data);
     free(mirrored_data);
 }
+
+void scale_crop(const char *filename, int center_x, int center_y, int crop_width, int crop_height) {
+    int width, height, channels;
+    unsigned char *data_in = NULL;
+
+    if (!read_image_data(filename, &data_in, &width, &height, &channels)) {
+        printf("Erreur lors de la lecture de l'image.\n");
+        return;
+    }
+
+    // Calcul des coordonnées du rectangle de crop
+    int x0 = center_x - crop_width / 2;
+    int y0 = center_y - crop_height / 2;
+
+    // Allocation du buffer de sortie
+    unsigned char *data_out = (unsigned char*)malloc(crop_width * crop_height * channels);
+    if (!data_out) {
+        printf("Erreur d'allocation mémoire.\n");
+        free(data_in);
+        return;
+    }
+
+    // Copie avec gestion des bords
+    for (int y = 0; y < crop_height; ++y) {
+        int in_y = y0 + y;
+        for (int x = 0; x < crop_width; ++x) {
+            int in_x = x0 + x;
+            int out_idx = (y * crop_width + x) * channels;
+
+            if (in_x >= 0 && in_x < width && in_y >= 0 && in_y < height) {
+                int in_idx = (in_y * width + in_x) * channels;
+                for (int c = 0; c < channels; ++c) {
+                    data_out[out_idx + c] = data_in[in_idx + c];
+                }
+            } else {
+                // Remplir en noir (ou transparent si alpha)
+                for (int c = 0; c < channels; ++c)
+                    data_out[out_idx + c] = 0;
+            }
+        }
+    }
+
+    // Sauvegarde l'image cropée
+    if (!write_image_data("image_out.bmp", data_out, crop_width, crop_height)) {
+        printf("Erreur lors de l'écriture de l'image.\n");
+    }
+    free(data_in);
+    free(data_out);
+}
