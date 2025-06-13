@@ -547,3 +547,19 @@ void rotate_cw(const char *source_path) {
     free(data);
     free(rotated_data);
 }
+
+void color_gray_luminance(unsigned char *data, int width, int height, int channels) {
+    for (int y = 0; y < height; ++y) {
+        for (int x = 0; x < width; ++x) {
+            int idx = (y * width + x) * channels;
+            unsigned char r = data[idx + 0];
+            unsigned char g = data[idx + 1];
+            unsigned char b = data[idx + 2];
+            unsigned char gray = (unsigned char)(0.21 * r + 0.72 * g + 0.07 * b);
+            data[idx + 0] = gray;
+            data[idx + 1] = gray;
+            data[idx + 2] = gray;
+            // Si RGBA (channels == 4), on laisse l'alpha intact
+        }
+    }
+}
