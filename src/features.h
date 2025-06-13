@@ -32,4 +32,6 @@ void color_blue(const char *source_path);
 
 void rotate_acw(const char *source_path);
 
- #endif
+void rotate_cw(const char *source_path);
+
+#endif
