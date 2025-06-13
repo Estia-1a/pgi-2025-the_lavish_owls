@@ -317,15 +317,13 @@ void stat_report(const char *filename) {
         return;
     }
 
-    unsigned int total_pixels = width * height;
-
     int max_pixel_sum = -1, min_pixel_sum = 256 * 3;
     pixelRGB max_pixel = {0, 0, 0}, min_pixel = {0, 0, 0};
     unsigned char max_r = 0, max_g = 0, max_b = 0;
     unsigned char min_r = 255, min_g = 255, min_b = 255;
 
-    for (unsigned int y = 0; y < height; y++) {
-        for (unsigned int x = 0; x < width; x++) {
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
             pixelRGB *p = get_pixel(data, width, height, channels, x, y);
             if (!p) continue;
 
@@ -547,6 +545,23 @@ void rotate_cw(const char *source_path) {
     free(data);
     free(rotated_data);
 }
+
+void color_gray_luminance(unsigned char *data, int width, int height, int channels) {
+    for (int y = 0; y < height; ++y) {
+        for (int x = 0; x < width; ++x) {
+            int idx = (y * width + x) * channels;
+            unsigned char r = data[idx + 0];
+            unsigned char g = data[idx + 1];
+            unsigned char b = data[idx + 2];
+            unsigned char gray = (unsigned char)(0.21 * r + 0.72 * g + 0.07 * b);
+            data[idx + 0] = gray;
+            data[idx + 1] = gray;
+            data[idx + 2] = gray;
+            // Si RGBA (channels == 4), on laisse l'alpha intact
+        }
+    }
+}
+
 void mirror_horizontal(const char *source_path) {
     unsigned char *data;
     int width, height, channels;

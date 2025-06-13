@@ -130,5 +130,22 @@ int main(int argc, char **argv) {
   else if (strncmp(configuration.command, "mirror_vertical", 15) == 0) {
     mirror_vertical(configuration.filenames[0]);
   }
+  else if (strcmp(configuration.command, "color_gray_luminance") == 0) {
+    int width, height, channels;
+    unsigned char *data_in = NULL;
+    if (!read_image_data(configuration.filenames[0], &data_in, &width, &height, &channels)) {
+        printf("Erreur lors de la lecture de l'image.\n");
+        return 1;
+    }
+    color_gray_luminance(data_in, width, height, channels);
+    if (!write_image_data("image_out.bmp", data_in, width, height)) {
+        printf("Erreur lors de l'écriture de l'image.\n");
+        free(data_in);
+        return 1;
+    }
+    free(data_in);
+    printf("Image convertie en niveaux de gris (luminosité) !\n");
+  }
+
     return 0;
 }
