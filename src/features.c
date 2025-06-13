@@ -272,9 +272,9 @@ void color_green(const char *source_path) {
     }
 
     if (write_image_data("image_out.bmp", data, width, height) == 0) {
-        printf("Erreur lors de l'écriture de l'image\n");
+        printf("Erreur lors de l'ecriture de l'image\n");
     } else {
-        printf("L'image avec seulement le vert a été enregistrée dans image_out.bmp\n");
+        printf("L'image avec seulement le vert a ete enregistree dans image_out.bmp\n");
     }
 
     free(data);
@@ -384,4 +384,166 @@ void color_gray(unsigned char *data, int width, int height, int channels) {
             // Si channels == 4, on laisse l'alpha intact
         }
     }
+}
+
+void color_invert(const char *source_path) {
+    unsigned char *data = NULL;
+    int width, height, channels;
+
+    // Lire les données de l'image
+    if (read_image_data(source_path, &data, &width, &height, &channels) != 1 || data == NULL) {
+        printf("Erreur lors de la lecture de l'image\n");
+        return;
+    }
+
+    // Inverser les couleurs pour chaque pixel
+    for (int i = 0; i < width * height * channels; i += channels) {
+        data[i] = 255 - data[i];         // Inverser R
+        data[i + 1] = 255 - data[i + 1]; // Inverser G
+        data[i + 2] = 255 - data[i + 2]; // Inverser B
+        // Si il y a un canal alpha (channels == 4), on ne le touche pas
+    }
+
+    // Écrire l'image inversée
+    if (write_image_data("image_out.bmp", data, width, height) == 0) {
+        printf("Erreur lors de l'ecriture de l'image\n");
+    } else {
+        printf("L'image avec les couleurs inversees a ete enregistree dans image_out.bmp\n");
+    }
+
+    // Libérer la mémoire
+    free(data);
+}
+void color_blue(const char *source_path) {
+    unsigned char *data;
+    int width, height, channels;
+    
+    if (!read_image_data(source_path, &data, &width, &height, &channels)) {
+        printf("Error reading image: %s\n", source_path);
+        return;
+    }
+    
+    int total_pixels = width * height;
+    int size = total_pixels * channels;
+    
+    for (int i = 0; i < size; i += channels) {
+        // Garder le bleu, mettre rouge et vert à 0
+        // Rouge = data[i + 0], Vert = data[i + 1], Bleu = data[i + 2]
+        if (channels >= 3) {
+            data[i + 0] = 0; // R
+            data[i + 1] = 0; // G
+            // data[i + 2] reste inchangé (B)
+        }
+    }
+    
+    if (!write_image_data("image_out.bmp", data, width, height)) {
+        printf("Error writing image\n");
+    }
+    
+    free(data);
+}
+
+void rotate_acw(const char *source_path) {
+    unsigned char *data = NULL;
+    int width, height, channels;
+
+    // Lire les données de l'image
+    if (read_image_data(source_path, &data, &width, &height, &channels) != 1 || data == NULL) {
+        printf("Erreur lors de la lecture de l'image\n");
+        return;
+    }
+
+    // Après rotation 90° anti-horaire :
+    // - nouvelle largeur = ancienne hauteur
+    // - nouvelle hauteur = ancienne largeur
+    int new_width = height;
+    int new_height = width;
+
+    // Créer un nouveau buffer pour l'image rotée
+    unsigned char *rotated_data = malloc(new_width * new_height * channels);
+    if (rotated_data == NULL) {
+        printf("Erreur d'allocation mémoire\n");
+        free(data);
+        return;
+    }
+
+    // Effectuer la rotation 90° anti-horaire
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            // Position dans l'image originale
+            int original_index = (y * width + x) * channels;
+            
+            // Position dans l'image rotée
+            // Pour rotation 90° anti-horaire : (x, y) -> (y, width-1-x)
+            int new_x = y;
+            int new_y = width - 1 - x;
+            int rotated_index = (new_y * new_width + new_x) * channels;
+            
+            // Copier les données pixel par pixel
+            for (int c = 0; c < channels; c++) {
+                rotated_data[rotated_index + c] = data[original_index + c];
+            }
+        }
+    }
+
+    // Écrire l'image rotée
+    if (write_image_data("image_out.bmp", rotated_data, new_width, new_height) == 0) {
+        printf("Erreur lors de l'ecriture de l'image\n");
+    } else {
+        printf("L'image avec rotation 90° anti-horaire a ete enregistree dans image_out.bmp\n");
+    }
+
+    // Libérer la mémoire
+    free(data);
+    free(rotated_data);
+}
+
+void rotate_cw(const char *source_path) {
+    unsigned char *data;
+    int width, height, channels;
+    
+    if (!read_image_data(source_path, &data, &width, &height, &channels)) {
+        printf("Error reading image: %s\n", source_path);
+        return;
+    }
+    
+    // Après rotation 90° horaire : largeur devient hauteur, hauteur devient largeur
+    int new_width = height;
+    int new_height = width;
+    
+    // Allouer mémoire pour l'image tournée
+    unsigned char *rotated_data = malloc(new_width * new_height * channels);
+    if (rotated_data == NULL) {
+        printf("Error: Memory allocation failed\n");
+        free(data);
+        return;
+    }
+    
+    // Rotation 90° sens horaire
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            // Position dans l'image originale
+            int original_index = (y * width + x) * channels;
+            
+            // Position dans l'image tournée
+            // Formule rotation 90° horaire: (x,y) -> (height-1-y, x)
+            int new_x = height - 1 - y;
+            int new_y = x;
+            int rotated_index = (new_y * new_width + new_x) * channels;
+            
+            // Copier tous les canaux (RGB ou RGBA)
+            for (int c = 0; c < channels; c++) {
+                rotated_data[rotated_index + c] = data[original_index + c];
+            }
+        }
+    }
+
+    // Sauvegarder l'image tournée
+    if (!write_image_data("image_out.bmp", rotated_data, new_width, new_height)) {
+        printf("Error writing image\n");
+    }
+    
+    // Libérer la mémoire
+    free(data);
+    free(rotated_data);
 }

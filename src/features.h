@@ -21,11 +21,19 @@ void min_pixel(const char *source_path);
 void min_component(const char *source_path, const char component);
 
 void color_green(const char *source_path);
+
 void color_red(const char *source_path);
+
 void color_gray(unsigned char *data, int width, int height, int channels);
 
 void stat_report(const char *filename);
 
+void color_invert(const char *source_path);
 
+void color_blue(const char *source_path);
 
- #endif
+void rotate_acw(const char *source_path);
+
+void rotate_cw(const char *source_path);
+
+#endif

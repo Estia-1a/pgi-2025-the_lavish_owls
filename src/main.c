@@ -92,6 +92,18 @@ int main(int argc, char **argv) {
   else if (strcmp(configuration.command, "color_green") == 0) {
     color_green(configuration.filenames[0]);
   }
+  else if (strncmp(configuration.command, "color_invert", 12) == 0) {
+    color_invert(configuration.filenames[0]);
+  }
+  else if (strcmp(command, "color_blue") == 0) {
+    color_blue(configuration.filenames[0]);
+  }
+  else if (strncmp(configuration.command, "rotate_acw", 10) == 0) {
+    rotate_acw(configuration.filenames[0]);
+  }
+  else if (strcmp(command, "rotate_cw") == 0) {
+    rotate_cw(configuration.filenames[0]);
+  }
 
   else if (strcmp(configuration.command, "color_gray") == 0) {
     int width, height, channels;
@@ -112,9 +124,6 @@ int main(int argc, char **argv) {
     free(data_in);
     printf("Image convertie en niveaux de gris !\n");
   }
-
-  
-  
 
     return 0;
 }
