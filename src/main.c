@@ -92,6 +92,9 @@ int main(int argc, char **argv) {
   else if (strcmp(configuration.command, "color_green") == 0) {
     color_green(configuration.filenames[0]);
   }
+  else if (strcmp(command, "color_blue") == 0) {
+    color_blue(configuration.filenames[0]);
+  }
 
     return 0;
 }
