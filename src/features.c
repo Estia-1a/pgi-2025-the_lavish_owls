@@ -722,3 +722,170 @@ void scale_crop(const char *filename, int center_x, int center_y, int crop_width
         free(data_in);
         free(data_out);
 }
+
+void scale_nearest(char *source_path, float coeff){
+    unsigned char* data;
+    unsigned char* nouvelle_memoire;
+    int width, height, channel_count, new_width, new_height;
+    int x_avant, y_avant;
+    if (read_image_data(source_path, &data, &width, &height, &channel_count) == 0) {
+        printf("Erreur avec le fichier : %s\n", source_path);
+    }
+    else{
+
+        new_width = (int)(width*coeff);
+        new_height = (int)(height*coeff);
+
+        nouvelle_memoire = (unsigned char*)malloc(new_width*new_height*channel_count);
+
+
+        int i,j;
+        for(j=0; j<new_height; j++){
+            for(i=0; i<new_width; i++){
+
+                x_avant = (int)((float)i/coeff + 0.5);
+                y_avant = (int)((float)j/coeff + 0.5);
+
+                if(x_avant < 0){
+                    x_avant = 0;
+                }
+
+                if(x_avant > width-1){
+                    x_avant = width -1;
+                }
+
+                if(y_avant < 0){
+                    y_avant = 0;
+                }
+
+                if(y_avant > height-1){
+                    y_avant = height -1;
+                }
+
+                pixelRGB *pixel_avant = get_pixel(data, width, height, 
+                                        channel_count, x_avant, y_avant);
+                pixelRGB *pixel_apres = get_pixel(nouvelle_memoire, new_width, new_height, 
+                                        channel_count, i, j);
+                
+                                        pixel_apres->R = pixel_avant->R;
+                                        pixel_apres->G = pixel_avant->G;
+                                        pixel_apres->B = pixel_avant->B;
+
+            }
+        }
+    }
+     if (write_image_data("image_out.bmp", nouvelle_memoire, new_width, new_height) == 0) {
+            printf("Erreur 2 avec le fichier : %s\n", source_path);
+        }
+       
+    free_image_data(data);
+    free(nouvelle_memoire);
+}
+
+void scale_bilinear(const char *source_path, float scale_factor) {
+    unsigned char *data;
+    int w, h, n;
+    int resultat = read_image_data(source_path, &data, &w, &h, &n);
+    
+    if (resultat == 0 || data == NULL) {
+        printf("Erreur: impossible de lire l'image\n");
+        return;
+    }
+    
+    if (scale_factor <= 0) {
+        printf("Erreur: facteur d'échelle invalide\n");
+        return;
+    }
+    
+    int new_w = (int)(w * scale_factor);
+    int new_h = (int)(h * scale_factor);
+    
+    if (new_w <= 0 || new_h <= 0) {
+        printf("Erreur: dimensions résultantes invalides\n");
+        return;
+    }
+    
+    unsigned char nouvelles_donnees[new_w * new_h * 3];
+    
+    for (int new_y = 0; new_y < new_h; new_y++) {
+        for (int new_x = 0; new_x < new_w; new_x++) {
+            float orig_x_f = (float)new_x / scale_factor;
+            float orig_y_f = (float)new_y / scale_factor;
+            
+            int x1 = (int)orig_x_f;
+            int y1 = (int)orig_y_f;
+            int x2 = x1 + 1;
+            int y2 = y1 + 1;
+            
+            if (x2 >= w) x2 = w - 1;
+            if (y2 >= h) y2 = h - 1;
+            
+            float dx = orig_x_f - x1;
+            float dy = orig_y_f - y1;
+            
+            int pos_tl = (y1 * w + x1) * 3;
+            int pos_tr = (y1 * w + x2) * 3;
+            int pos_bl = (y2 * w + x1) * 3;
+            int pos_br = (y2 * w + x2) * 3;
+            
+            int new_pos = (new_y * new_w + new_x) * 3;
+            
+            for (int c = 0; c < 3; c++) {
+                float top = data[pos_tl + c] * (1 - dx) + data[pos_tr + c] * dx;
+                float bottom = data[pos_bl + c] * (1 - dx) + data[pos_br + c] * dx;
+                float result = top * (1 - dy) + bottom * dy;
+                
+                nouvelles_donnees[new_pos + c] = (unsigned char)result;
+            }
+        }
+    }
+    
+    write_image_data("image_out.bmp", nouvelles_donnees, new_w, new_h);
+
+}
+
+void color_desaturate(char *source_path){
+
+    unsigned char* data;
+    int width, height, channel_count;
+
+    if (read_image_data(source_path, &data, &width, &height, &channel_count) == 0) {
+        printf("Erreur avec le fichier : %s\n", source_path);
+    }
+    else{
+        int i, j;
+        int min_val, max_val, new_val;
+
+        for(j=0; j<height; j++){
+            for(i=0; i<width; i++){
+
+                pixelRGB *pixel = get_pixel(data, width, height, 
+                channel_count, i, j );
+
+                if(pixel !=NULL){
+
+                    min_val=pixel->R;
+
+                    if(pixel->G < min_val) min_val = pixel->G;
+                    if(pixel->B < min_val) min_val = pixel->B;
+
+                    min_val=pixel->R;
+                    
+                    if(pixel->G > max_val) max_val = pixel->G;
+                    if(pixel->B > max_val) max_val = pixel->B;
+                    new_val = (max_val + min_val) / 2;
+
+                    pixel->R = new_val;
+                    pixel->G = new_val;
+                    pixel->B = new_val;
+                }
+
+            }
+        }
+    }
+    if (write_image_data("image_out.bmp", data, width, height) == 0) {
+        printf("Erreur 2 avec le fichier : %s\n", source_path);
+    }
+    
+free_image_data(data);
+}
