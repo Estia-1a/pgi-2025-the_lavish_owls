@@ -108,7 +108,7 @@ void max_pixel(char *source_path) {
         }
     }
     
-    // Afficher le résultat
+
     printf("max_pixel (%d, %d): %d, %d, %d\n", max_x, max_y, max_R, max_G, max_B);
     free(data);
 }
@@ -123,7 +123,7 @@ void second_line(const char *source_path) {
             return;
         }
 
-        int index = (1 * width + 0) * channels; // (1,0) = 1ère colonne, 2e ligne
+        int index = (1 * width + 0) * channels; 
         printf("second_line: %d, %d, %d\n", data[index], data[index+1], data[index+2]);
     } else {
         printf("Error reading image: %s\n", source_path);
@@ -132,25 +132,25 @@ void second_line(const char *source_path) {
 
 void max_component(const char *source_path, char component) {
     unsigned char *data = NULL;
-    int width, height, channels;
+    int width =0, height =0, channels=0;
 
-    if (read_image_data(source_path, &data, &width, &height, &channels) != 1 || data == NULL) {
-        printf("Erreur lors de la lecture de l'image\n");
-        return;
-    }
-
+    read_image_data(source_path, &data, &width, &height, &channels);
+   
     int max_value = -1;
-    int max_x = 0, max_y = 0;
-    int comp_index = (component == 'R') ? 0 : (component == 'G') ? 1 : 2;
+    int max_x =0, max_y =0;
 
-    for (int y = 0; y < height; ++y) {
-        for (int x = 0; x < width; ++x) {
-            int index = (y * width + x) * channels;
-            int value = data[index + comp_index];
-            if (value > max_value) {
-                max_value = value;
+    for (int y=0; y<height;y++) {
+        for (int x=0; x<width; x++) {
+            pixelRGB * pixel1 = get_pixel(data,width, height,channels,x,y);
+            int value;
+            if (component=='R') value = pixel1->R;
+            else if (component=='G') value = pixel1->G;
+            else value=pixel1->B;
+
+            if (value >max_value) {
+                max_value=value;
                 max_x = x;
-                max_y = y;
+                max_y=y;
             }
         }
     }
@@ -168,7 +168,7 @@ void min_pixel(const char *source_path) {
         return;
     }
 
-    int min_sum = 256 * 3; // plus que max RGB (255+255+255)
+    int min_sum = 256 * 3; 
     int min_x = 0, min_y = 0;
     int min_r = 0, min_g = 0, min_b = 0;
 
