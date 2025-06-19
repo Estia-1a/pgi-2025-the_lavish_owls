@@ -30,31 +30,30 @@ int main(int argc, char **argv) {
   char *filename = NULL;
   char *command = NULL;
 
-  for (int i = 1; i < argc; i++) {
-    if (strcmp(argv[i], "-f") == 0 && i + 1 < argc) {
-        filename = argv[i + 1];
-        i++; // Skip next argument car on l'a déjà traité
-    } else if (strcmp(argv[i], "-c") == 0 && i + 1 < argc) {
-        command = argv[i + 1];
-        i++; // Skip next argument car on l'a déjà traité
-    }
-  }
+ 
   if ( strncmp( configuration.command, "helloworld", 10 ) == 0 ) {
     /* helloworld() function is defined in feature.h and implemented in feature.c */
     helloWorld();
+
   } else if (strncmp( configuration.command, "dimension", 3) == 0) {
     dimension(configuration.filenames[0]);
+
   } else if (strncmp(configuration.command, "first_pixel", 11) == 0) {
     /* first_pixel() function is defined in feature.h and implemented in feature.c */
     first_pixel(configuration.filenames[0]);
+
   } else if (strncmp(configuration.command, "tenth_pixel", 11) == 0) {
     tenth_pixel(configuration.filenames[0]);
+
   } else if (strncmp(configuration.command, "max_pixel", 9) == 0) {
     max_pixel(configuration.filenames[0]);
+
   } else if (strncmp(configuration.command, "second_line", 11) == 0) {
     second_line(configuration.filenames[0]);
+
   } else if (strncmp(configuration.command, "min_pixel", 9) == 0) {
     min_pixel(configuration.filenames[0]);
+
   } else if (strncmp(configuration.command, "min_component", 13) == 0) {
     char component = 0;
     for (int i = 1; i < argc; i++) {

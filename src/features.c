@@ -54,39 +54,17 @@ void first_pixel(char *source_path) {
 
 void tenth_pixel(char *source_path) {
     unsigned char *data = NULL;
-    int width, height, channel_count;
+    int width=0, height=0, channel_count= 0 ;
     
     
     int result = read_image_data(source_path, &data, &width, &height, &channel_count);
     
-    
-    if (result == 0 || data == NULL) {
-        printf("Erreur lors de la lecture de l'image\n");
-        return;
-    }
-    
-    
-    if (width < 10) {
-        printf("L'image doit avoir au moins 10 pixels de largeur\n");
-        free(data);
-        return;
-    }
-    
-    
-    int pixel_index = 9; // 10ème pixel = index 9
-    int data_index = pixel_index * 3; // Chaque pixel = 3 bytes (RGB)
-    
-    
-    unsigned char R = data[data_index];     // Position 27
-    unsigned char G = data[data_index + 1]; // Position 28
-    unsigned char B = data[data_index + 2]; // Position 29
-    
-    
-    printf("tenth_pixel: %d, %d, %d\n", R, G, B);
+    printf("tenth_pixel: %d, %d, %d", data[27], data[28], data[29]);
     
     
     free(data);
 }
+
 void max_pixel(char *source_path) {
     unsigned char *data = NULL;
     int width, height, channel_count;
