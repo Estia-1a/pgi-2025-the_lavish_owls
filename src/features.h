@@ -48,6 +48,8 @@ void mirror_vertical(const char *source_path);
 
 void scale_nearest(char *source_path, float coeff);
 
+void scale_bilinear(const char *source_path, float scale_factor);
+
 void color_desaturate(char *source_path);
 
 #endif

@@ -782,6 +782,68 @@ void scale_nearest(char *source_path, float coeff){
     free(nouvelle_memoire);
 }
 
+void scale_bilinear(const char *source_path, float scale_factor) {
+    unsigned char *data;
+    int w, h, n;
+    int resultat = read_image_data(source_path, &data, &w, &h, &n);
+    
+    if (resultat == 0 || data == NULL) {
+        printf("Erreur: impossible de lire l'image\n");
+        return;
+    }
+    
+    if (scale_factor <= 0) {
+        printf("Erreur: facteur d'échelle invalide\n");
+        return;
+    }
+    
+    int new_w = (int)(w * scale_factor);
+    int new_h = (int)(h * scale_factor);
+    
+    if (new_w <= 0 || new_h <= 0) {
+        printf("Erreur: dimensions résultantes invalides\n");
+        return;
+    }
+    
+    unsigned char nouvelles_donnees[new_w * new_h * 3];
+    
+    for (int new_y = 0; new_y < new_h; new_y++) {
+        for (int new_x = 0; new_x < new_w; new_x++) {
+            float orig_x_f = (float)new_x / scale_factor;
+            float orig_y_f = (float)new_y / scale_factor;
+            
+            int x1 = (int)orig_x_f;
+            int y1 = (int)orig_y_f;
+            int x2 = x1 + 1;
+            int y2 = y1 + 1;
+            
+            if (x2 >= w) x2 = w - 1;
+            if (y2 >= h) y2 = h - 1;
+            
+            float dx = orig_x_f - x1;
+            float dy = orig_y_f - y1;
+            
+            int pos_tl = (y1 * w + x1) * 3;
+            int pos_tr = (y1 * w + x2) * 3;
+            int pos_bl = (y2 * w + x1) * 3;
+            int pos_br = (y2 * w + x2) * 3;
+            
+            int new_pos = (new_y * new_w + new_x) * 3;
+            
+            for (int c = 0; c < 3; c++) {
+                float top = data[pos_tl + c] * (1 - dx) + data[pos_tr + c] * dx;
+                float bottom = data[pos_bl + c] * (1 - dx) + data[pos_br + c] * dx;
+                float result = top * (1 - dy) + bottom * dy;
+                
+                nouvelles_donnees[new_pos + c] = (unsigned char)result;
+            }
+        }
+    }
+    
+    write_image_data("image_out.bmp", nouvelles_donnees, new_w, new_h);
+
+}
+
 void color_desaturate(char *source_path){
 
     unsigned char* data;
