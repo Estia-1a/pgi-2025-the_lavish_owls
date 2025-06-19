@@ -1,0 +1,26 @@
+/home/runner/work/pgi-2025-the_lavish_owls/pgi-2025-the_lavish_owls/src/main.c: In function ‘main’:
+/home/runner/work/pgi-2025-the_lavish_owls/pgi-2025-the_lavish_owls/src/main.c:97:12: warning: argument 1 null where non-null expected [-Wnonnull]
+   97 |   else if (strcmp(command, "color_blue") == 0) {
+      |            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from /home/runner/work/pgi-2025-the_lavish_owls/pgi-2025-the_lavish_owls/src/main.c:3:
+/usr/include/string.h:156:12: note: in a call to function ‘strcmp’ declared ‘nonnull’
+  156 | extern int strcmp (const char *__s1, const char *__s2)
+      |            ^~~~~~
+/home/runner/work/pgi-2025-the_lavish_owls/pgi-2025-the_lavish_owls/src/main.c:103:12: warning: argument 1 null where non-null expected [-Wnonnull]
+  103 |   else if (strcmp(command, "rotate_cw") == 0) {
+      |            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/include/string.h:156:12: note: in a call to function ‘strcmp’ declared ‘nonnull’
+  156 | extern int strcmp (const char *__s1, const char *__s2)
+      |            ^~~~~~
+/home/runner/work/pgi-2025-the_lavish_owls/pgi-2025-the_lavish_owls/src/main.c:126:12: warning: argument 1 null where non-null expected [-Wnonnull]
+  126 |   else if (strcmp(command, "mirror_horizontal") == 0) {
+      |            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/include/string.h:156:12: note: in a call to function ‘strcmp’ declared ‘nonnull’
+  156 | extern int strcmp (const char *__s1, const char *__s2)
+      |            ^~~~~~
+/home/runner/work/pgi-2025-the_lavish_owls/pgi-2025-the_lavish_owls/src/main.c:129:12: warning: argument 1 null where non-null expected [-Wnonnull]
+  129 |   else if (strcmp(command, "mirror_total") == 0) {
+      |            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/usr/include/string.h:156:12: note: in a call to function ‘strcmp’ declared ‘nonnull’
+  156 | extern int strcmp (const char *__s1, const char *__s2)
+      |            ^~~~~~
