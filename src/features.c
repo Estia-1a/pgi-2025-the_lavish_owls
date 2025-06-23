@@ -232,59 +232,76 @@ void min_component(const char *source_path, const char component) {
 }
 
 
-void color_green(const char *source_path) {
+void color_green(const char *filename) {
     unsigned char *data = NULL;
     int width, height, channels;
-
-    if (read_image_data(source_path, &data, &width, &height, &channels) != 1 || data == NULL) {
-        printf("Erreur lors de la lecture de l'image\n");
-        return;
-    }
-
-    // Garde uniquement la composante verte
-    for (int i = 0; i < width * height * channels; i += channels) {
-        data[i] = 0;         // R = 0
-        // data[i+1] = G (on garde)
-        data[i + 2] = 0;     // B = 0
-        // Si image avec alpha, on ne touche pas à data[i+3]
-    }
-
-    if (write_image_data("image_out.bmp", data, width, height) == 0) {
-        printf("Erreur lors de l'ecriture de l'image\n");
-    } else {
-        printf("L'image avec seulement le vert a ete enregistree dans image_out.bmp\n");
-    }
-
-    free(data);
-}
-
-void color_red(const char *source_path) {
-    unsigned char *data;
-    int width, height, channels;
-
-    if (!read_image_data(source_path, &data, &width, &height, &channels)) {
-        printf("Error reading image: %s\n", source_path);
-        return;
-    }
-
-    int total_pixels = width * height;
-    int size = total_pixels * channels;
+    read_image_data(filename, &data,&width,&height,&channels);
+    int size = width*height*channels;
 
     for (int i = 0; i < size; i += channels) {
-        // Garder le rouge, mettre vert et bleu à 0
-        // Rouge = data[i + 0], Vert = data[i + 1], Bleu = data[i + 2]
-        if (channels >= 3) {
-            data[i + 1] = 0; // G
-            data[i + 2] = 0; // B
-        }
+        data[i] = 0; 
+        data[i + 2] = 0; 
     }
 
-    if (!write_image_data("image_out.bmp", data, width, height)) {
-        printf("Error writing image_out.bmp\n");
-    } else {
-        printf("Red-only image written to image_out.bmp\n");
+    if (write_image_data("image_out.bmp", data, width,height) !=0) {
+        free(data);
     }
 }
+
+void color_blue(const char *filename) {
+    unsigned char *data = NULL;
+    int width, height, channels;
+    read_image_data(filename, &data,&width,&height,&channels);
+    int size = width*height*channels;
+
+    for (int i = 0; i < size; i += channels) {
+        data[i] = 0; 
+        data[i + 1] = 0; 
+    }
+
+    if (write_image_data("image_out.bmp", data, width,height) !=0) {
+        free(data);
+    }
+
+    
+}
+
+void color_red(const char *filename) {
+    unsigned char *data = NULL;
+    int width, height, channels;
+    read_image_data(filename, &data,&width,&height,&channels);
+    int size = width*height*channels;
+
+    for (int i = 0; i < size; i += channels) {
+        data[i + 1] = 0; 
+        data[i + 2] = 0; 
+    }
+
+    if (write_image_data("image_out.bmp", data, width,height) !=0) {
+        free(data);
+    }
+}
+
+void color_gray(const char * filename) {
+    unsigned char *data = NULL;
+    int width, height, channels;
+    read_image_data(filename, &data,&width,&height,&channels);
+
+    int size = width*height*channels;
+
+    for (int i = 0; i < size; i += channels) {
+        unsigned char value = (data[i] + data[i+1] + data[i+2]) /3;
+        data[i]=value;
+        data[i+1]=value;
+        data[i+2]=value;
+    }
+
+    if (write_image_data("image_out.bmp", data, width,height) !=0) {
+        free(data);
+    }
+}
+
+
 
 void stat_report(const char *filename) {
     unsigned char *data = NULL;
@@ -346,21 +363,7 @@ void stat_report(const char *filename) {
     free(data);
 }
 
-void color_gray(unsigned char *data, int width, int height, int channels) {
-    for (int y = 0; y < height; ++y) {
-        for (int x = 0; x < width; ++x) {
-            int idx = (y * width + x) * channels;
-            unsigned char r = data[idx + 0];
-            unsigned char g = data[idx + 1];
-            unsigned char b = data[idx + 2];
-            unsigned char gray = (r + g + b) / 3;
-            data[idx + 0] = gray;
-            data[idx + 1] = gray;
-            data[idx + 2] = gray;
-            // Si channels == 4, on laisse l'alpha intact
-        }
-    }
-}
+
 
 void color_invert(const char *source_path) {
     unsigned char *data = NULL;
@@ -390,34 +393,7 @@ void color_invert(const char *source_path) {
     // Libérer la mémoire
     free(data);
 }
-void color_blue(const char *source_path) {
-    unsigned char *data;
-    int width, height, channels;
-    
-    if (!read_image_data(source_path, &data, &width, &height, &channels)) {
-        printf("Error reading image: %s\n", source_path);
-        return;
-    }
-    
-    int total_pixels = width * height;
-    int size = total_pixels * channels;
-    
-    for (int i = 0; i < size; i += channels) {
-        // Garder le bleu, mettre rouge et vert à 0
-        // Rouge = data[i + 0], Vert = data[i + 1], Bleu = data[i + 2]
-        if (channels >= 3) {
-            data[i + 0] = 0; // R
-            data[i + 1] = 0; // G
-            // data[i + 2] reste inchangé (B)
-        }
-    }
-    
-    if (!write_image_data("image_out.bmp", data, width, height)) {
-        printf("Error writing image\n");
-    }
-    
-    free(data);
-}
+
 
 void rotate_acw(const char *source_path) {
     unsigned char *data = NULL;
@@ -688,14 +664,14 @@ void scale_crop(const char *filename, int center_x, int center_y, int crop_width
 
 
 
-    // Calcul des coordonnées du rectangle de crop
+    
     int x0 = center_x - crop_width / 2;
     int y0 = center_y - crop_height / 2;
 
-    // Allocation du buffer de sortie
+   
     unsigned char *data_out = (unsigned char*)malloc(crop_width * crop_height * channels);
 
-     // Copie avec gestion des bords
+     
     for (int y = 0; y < crop_height; ++y) {
         int in_y = y0 + y;
         for (int x = 0; x < crop_width; ++x) {
@@ -708,14 +684,14 @@ void scale_crop(const char *filename, int center_x, int center_y, int crop_width
                     data_out[out_idx + c] = data_in[in_idx + c];
                 }
             } else {
-                // Remplir en noir (ou transparent si alpha)
+                
                 for (int c = 0; c < channels; ++c)
                     data_out[out_idx + c] = 0;
                 }
         }
     }
         
-    // Sauvegarde l'image cropée
+    
         if (!write_image_data("image_out.bmp", data_out, crop_width, crop_height)) {
             printf("Erreur lors de l'écriture de l'image.\n");
         }
@@ -723,63 +699,37 @@ void scale_crop(const char *filename, int center_x, int center_y, int crop_width
         free(data_out);
 }
 
-void scale_nearest(char *source_path, float coeff){
-    unsigned char* data;
-    unsigned char* nouvelle_memoire;
-    int width, height, channel_count, new_width, new_height;
-    int x_avant, y_avant;
-    if (read_image_data(source_path, &data, &width, &height, &channel_count) == 0) {
-        printf("Erreur avec le fichier : %s\n", source_path);
-    }
-    else{
+#define MAX_W       4000
+#define MAX_H       3000
+#define MAX_PIXELS (MAX_W * MAX_H)
+static unsigned char dst_buffer[MAX_PIXELS * 4];
 
-        new_width = (int)(width*coeff);
-        new_height = (int)(height*coeff);
+void scale_nearest(const char *in_path, float coeff) {
+    unsigned char *src = NULL;
+    int w = 0, h = 0, channels = 0;
+    read_image_data(in_path, &src, &w, &h, &channels);
+    int new_w = (int)(w * coeff);
+    int new_h = (int)(h * coeff);
+    if (new_w < 1) new_w = 1;
+    if (new_h < 1) new_h = 1;
 
-        nouvelle_memoire = (unsigned char*)malloc(new_width*new_height*channel_count);
+    unsigned char dst[new_w * new_h * channels];
 
-
-        int i,j;
-        for(j=0; j<new_height; j++){
-            for(i=0; i<new_width; i++){
-
-                x_avant = (int)((float)i/coeff + 0.5);
-                y_avant = (int)((float)j/coeff + 0.5);
-
-                if(x_avant < 0){
-                    x_avant = 0;
-                }
-
-                if(x_avant > width-1){
-                    x_avant = width -1;
-                }
-
-                if(y_avant < 0){
-                    y_avant = 0;
-                }
-
-                if(y_avant > height-1){
-                    y_avant = height -1;
-                }
-
-                pixelRGB *pixel_avant = get_pixel(data, width, height, 
-                                        channel_count, x_avant, y_avant);
-                pixelRGB *pixel_apres = get_pixel(nouvelle_memoire, new_width, new_height, 
-                                        channel_count, i, j);
-                
-                                        pixel_apres->R = pixel_avant->R;
-                                        pixel_apres->G = pixel_avant->G;
-                                        pixel_apres->B = pixel_avant->B;
-
+    for (int y = 0; y < new_h; ++y) {
+        int src_y = y * h / new_h;
+        for (int x = 0; x < new_w; ++x) {
+            int src_x = x * w / new_w;
+            unsigned char *pS = src + (src_y * w + src_x) * channels;
+            unsigned char *pD = dst + (y * new_w + x) * channels;
+            for (int c = 0; c < channels; ++c) {
+                pD[c] = pS[c];
             }
         }
     }
-     if (write_image_data("image_out.bmp", nouvelle_memoire, new_width, new_height) == 0) {
-            printf("Erreur 2 avec le fichier : %s\n", source_path);
-        }
-       
-    free_image_data(data);
-    free(nouvelle_memoire);
+
+    write_image_data("image_out.bmp", dst, new_w, new_h);
+        
+    free_image_data(src);
 }
 
 void scale_bilinear(const char *source_path, float scale_factor) {

@@ -27,7 +27,7 @@ int main(int argc, char **argv) {
   /* Example with helloworld command
    * If helloworld is a called command: freud.exe -f images/input/image.jpeg -c helloworld 
    */
-  char *filename = NULL;
+  
   char *command = NULL;
 
  
@@ -99,7 +99,7 @@ int main(int argc, char **argv) {
     stat_report(configuration.filenames[0]);
   }
 
-  else if (strcmp(configuration.command, "color_green") == 0) {
+  else if (strncmp(configuration.command, "color_green",11) == 0) {
     color_green(configuration.filenames[0]);
   }
   
@@ -107,7 +107,7 @@ int main(int argc, char **argv) {
     color_invert(configuration.filenames[0]);
   }
 
-  else if (strcmp(command, "color_blue") == 0) {
+  else if (strncmp(configuration.command, "color_blue",10) == 0) {
     color_blue(configuration.filenames[0]);
   }
 
@@ -119,24 +119,8 @@ int main(int argc, char **argv) {
     rotate_cw(configuration.filenames[0]);
   }
 
-  else if (strcmp(configuration.command, "color_gray") == 0) {
-    int width, height, channels;
-    unsigned char *data_in = NULL;
-    // Lecture de l'image
-    if (!read_image_data(configuration.filenames[0], &data_in, &width, &height, &channels)) {
-        printf("Erreur lors de la lecture de l'image.\n");
-        return 1;
-    }
-    // Application de la conversion en niveaux de gris
-    color_gray(data_in, width, height, channels);
-    // Sauvegarde de l'image
-    if (!write_image_data("image_out.bmp", data_in, width, height)) {
-        printf("Erreur lors de l'écriture de l'image.\n");
-        free(data_in);
-        return 1;
-    }
-    free(data_in);
-    printf("Image convertie en niveaux de gris !\n");
+  else if (strncmp(configuration.command, "color_gray",10) == 0) {
+    color_gray(configuration.filenames[0]);
   }
 
   else if (strcmp(command, "mirror_horizontal") == 0) {
@@ -188,19 +172,15 @@ int main(int argc, char **argv) {
     scale_crop(configuration.filenames[0], cx, cy, cw, ch);
     printf("Image cropée !\n");
   }
-  else if ( strncmp( configuration.command, "scale_nearest", 13) == 0 ) {
-  /* scale_nearest() function is defined in feature.h and implemented in feature.c */
-  float coeff;
-  sscanf(configuration.arguments[0], "%f", &coeff);
-  scale_nearest(configuration.filenames[0], coeff);
+  else if ( strncmp(configuration.command, "scale_nearest", 13) == 0 ) {
+    float coeff = atof(configuration.arguments[0]);
+    scale_nearest(configuration.filenames[0], coeff);
   }
   else if ( strncmp( configuration.command, "scale_bilinear", 15 ) == 0 ) {
-  scale_bilinear( configuration.filenames[0], atof(configuration.arguments[0]) );
+    scale_bilinear( configuration.filenames[0], atof(configuration.arguments[0]) );
   }
   else if ( strcmp( configuration.command, "color_desaturate") == 0 ) {
-  /* color_desaturate() function is defined in feature.h and implemented in feature.c */
-  
-  color_desaturate(configuration.filenames[0]);
+    color_desaturate(configuration.filenames[0]);
 }
 
     return 0;

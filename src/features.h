@@ -24,7 +24,7 @@ void color_green(const char *source_path);
 
 void color_red(const char *source_path);
 
-void color_gray(unsigned char *data, int width, int height, int channels);
+void color_gray(const char * filename);
 
 void stat_report(const char *filename);
 
@@ -46,7 +46,7 @@ void mirror_total(char* filename);
 
 void mirror_vertical(const char *source_path);
 
-void scale_nearest(char *source_path, float coeff);
+void scale_nearest(const char *in_path, float coeff);
 
 void scale_bilinear(const char *source_path, float scale_factor);
 
